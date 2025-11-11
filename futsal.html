@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futsal Arena - Turniej Piłki Nożnej</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: #fbbf24;
+            border-bottom-color: #fbbf24;
+        }
+        
+        .main-content {
+            padding: 2rem 0;
+        }
+        
+        .section {
+            background: rgba(30, 41, 59, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .next-match {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+        }
+        
+        .team-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .vs {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fbbf24;
+        }
+        
+        .match-time {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+        
+        .matches-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .match-item {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .match-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .match-teams-small {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .match-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-completed { color: #22c55e; background: rgba(34, 197, 94, 0.1); }
+        .status-upcoming { color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+        .status-scheduled { color: #3b82f6; background: rgba(59, 130, 246, 0.1); }
+        
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .standings-table th {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            color: #fbbf24;
+        }
+        
+        .standings-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+        }
+        
+        .standings-table tr:hover {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 4rem auto;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #cbd5e1;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+        }
+        
+        .admin-section {
+            display: none;
+        }
+        
+        .admin-active .admin-section {
+            display: block;
+        }
+        
+        .admin-active .public-section {
+            display: none;
+        }
+        
+        .admin-panel {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .admin-form {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .admin-list {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .admin-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .btn-green { background: #22c55e; }
+        .btn-red { background: #ef4444; }
+        .btn-blue { background: #3b82f6; }
+        
+        .edit-input {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 0.25rem;
+            color: white;
+            width: 60px;
+        }
+        
+        .admin-input {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 0.25rem;
+            color: white;
+        }
+        
+        .admin-select {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 0.5rem;
+            color: white;
+            width: 100%;
+        }
+        
+        .footer {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem 0;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        .footer-link {
+            color: #fbbf24;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="public-section">
+            <header class="header">
+                <div class="container">
+                    <nav class="nav">
+                        <div class="logo">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="#fbbf24"/>
+                            </svg>
+                            Futsal Arena
+                        </div>
+                        <div class="nav-links">
+                            <a href="#" class="nav-link active" onclick="showView('schedule')">Terminarz</a>
+                            <a href="#" class="nav-link" onclick="showView('standings')">Tabela</a>
+                            <a href="#" class="nav-link" onclick="showView('admin')">Panel Admina</a>
+                        </div>
+                    </nav>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div class="container">
+                    <div id="schedule-view">
+                        <section class="section">
+                            <h2 class="section-title">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8 7V3M16 7V3M7 11H17M5 21H19C20.1046 21 21 20.1046 21 19V7C21 5.89543 20.1046 5 19 5H5C3.89543 5 3 5.89543 3 7V19C3 20.1046 3.89543 21 5 21Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                Następny mecz
+                            </h2>
+                            <div id="next-match" class="next-match">
+                                <div class="match-teams">
+                                    <span class="team-name">Brak meczu</span>
+                                    <span class="vs">VS</span>
+                                    <span class="team-name">Brak meczu</span>
+                                </div>
+                                <div class="match-time">Brak zaplanowanych meczów</div>
+                            </div>
+                        </section>
+
+                        <section class="section">
+                            <h2 class="section-title">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 12H3M12 3V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                </svg>
+                                Wszystkie mecze
+                            </h2>
+                            <div id="matches-list" class="matches-list">
+                                <div class="match-item">
+                                    <div class="match-info">
+                                        <div class="match-teams-small">
+                                            <span>Brak meczów</span>
+                                        </div>
+                                    </div>
+                                    <div class="match-info">
+                                        <span class="match-time">Brak meczów</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <section class="section">
+                            <h2 class="section-title">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 3H21V8M8 3H3V8M16 21H21V16M8 21H3V16M17 12C17 13.6569 15.6569 15 14 15C12.3431 15 11 13.6569 11 12C11 10.3431 12.3431 9 14 9C15.6569 9 17 10.3431 17 12ZM3 15H7C7.55228 15 8 14.5523 8 14V10C8 9.44772 7.55228 9 7 9H3C2.44772 9 2 9.44772 2 10V14C2 14.5523 2.44772 15 3 15ZM21 9H17C16.4477 9 16 9.44772 16 10V14C16 14.5523 16.4477 15 17 15H21C21.5523 15 22 14.5523 22 14V10C22 9.44772 21.5523 9 21 9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                Odpadnięte drużyny
+                            </h2>
+                            <div id="eliminated-teams" class="matches-list">
+                                <div class="match-item">
+                                    <div class="match-info">
+                                        <div class="match-teams-small">
+                                            <span>Brak odpadniętych drużyn</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div id="standings-view" style="display: none;">
+                        <section class="section">
+                            <h2 class="section-title">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 3H21V8M8 3H3V8M16 21H21V16M8 21H3V16M17 12C17 13.6569 15.6569 15 14 15C12.3431 15 11 13.6569 11 12C11 10.3431 12.3431 9 14 9C15.6569 9 17 10.3431 17 12ZM3 15H7C7.55228 15 8 14.5523 8 14V10C8 9.44772 7.55228 9 7 9H3C2.44772 9 2 9.44772 2 10V14C2 14.5523 2.44772 15 3 15ZM21 9H17C16.4477 9 16 9.44772 16 10V14C16 14.5523 16.4477 15 17 15H21C21.5523 15 22 14.5523 22 14V10C22 9.44772 21.5523 9 21 9Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                Tabela rozgrywek
+                            </h2>
+                            <div class="overflow-x-auto">
+                                <table class="standings-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Miejsce</th>
+                                            <th>Drużyna</th>
+                                            <th>Punkty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="standings-body">
+                                        <tr>
+                                            <td colspan="3">Brak drużyn</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    </div>
+
+                    <div id="admin-view" style="display: none;">
+                        <div class="login-form">
+                            <h2 class="section-title" style="justify-content: center; margin-bottom: 1rem;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                Panel Administracyjny
+                            </h2>
+                            <form id="loginForm">
+                                <div class="form-group">
+                                    <label class="form-label">Login</label>
+                                    <input type="text" id="username" class="form-input" placeholder="Wpisz login">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Hasło</label>
+                                    <input type="password" id="password" class="form-input" placeholder="Wpisz hasło">
+                                </div>
+                                <button type="submit" class="btn" style="width: 100%;">Zaloguj się</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <div class="admin-section">
+            <header class="header">
+                <div class="container">
+                    <nav class="nav">
+                        <div class="logo">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="#fbbf24"/>
+                            </svg>
+                            Futsal Arena Admin
+                        </div>
+                        <div class="nav-links">
+                            <a href="#" class="nav-link active" onclick="showAdminView('schedule')">Terminarz</a>
+                            <a href="#" class="nav-link" onclick="showAdminView('standings')">Tabela</a>
+                            <a href="#" class="nav-link" onclick="showAdminView('admin')">Panel Admina</a>
+                            <button onclick="logout()" class="btn btn-red">Wyloguj</button>
+                        </div>
+                    </nav>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div class="container">
+                    <div id="admin-main-view">
+                        <section class="section">
+                            <h2 class="section-title">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 4V20M18 10L12 4L6 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                Panel Administracyjny
+                            </h2>
+                            
+                            <div class="admin-panel">
+                                <div class="admin-form">
+                                    <h3>Dodaj drużynę</h3>
+                                    <div class="form-group">
+                                        <input type="text" id="newTeamName" class="form-input" placeholder="Nazwa drużyny">
+                                    </div>
+                                    <button onclick="addTeam()" class="btn">Dodaj drużynę</button>
+                                    
+                                    <h3 style="margin-top: 2rem;">Dodaj mecz</h3>
+                                    <div class="form-group">
+                                        <label class="form-label">Drużyna 1</label>
+                                        <select id="team1" class="admin-select">
+                                            <option value="">Wybierz drużynę</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Drużyna 2</label>
+                                        <select id="team2" class="admin-select">
+                                            <option value="">Wybierz drużynę</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Godzina</label>
+                                        <input type="time" id="matchTime" class="form-input">
+                                    </div>
+                                    <button onclick="addMatch()" class="btn">Dodaj mecz</button>
+                                    
+                                    <h3 style="margin-top: 2rem;">Zakończ mecz</h3>
+                                    <div class="form-group">
+                                        <label class="form-label">Mecz</label>
+                                        <select id="matchToComplete" class="admin-select">
+                                            <option value="">Wybierz mecz</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Wynik drużyny 1</label>
+                                        <input type="number" id="score1" class="form-input" placeholder="Gole">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Wynik drużyny 2</label>
+                                        <input type="number" id="score2" class="form-input" placeholder="Gole">
+                                    </div>
+                                    <button onclick="completeMatch()" class="btn">Zakończ mecz</button>
+                                </div>
+
+                                <div class="admin-list">
+                                    <h3>Lista drużyn</h3>
+                                    <div id="teams-list">
+                                        <!-- Drużyny będą dodawane tutaj -->
+                                    </div>
+                                    
+                                    <h3 style="margin-top: 2rem;">Lista meczów</h3>
+                                    <div id="admin-matches-list">
+                                        <!-- Mecze będą dodawane tutaj -->
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+        
+        <footer class="footer">
+            <div class="container">
+                <p>powered by <a href="https://www.instagram.com/p.paziewskii" target="_blank" class="footer-link">p.paziewskii</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let isAuthenticated = false;
+        let teams = [];
+        let matches = [];
+        let eliminatedTeams = [];
+
+        // Funkcje do zarządzania danymi
+        function loadFromStorage() {
+            const savedTeams = localStorage.getItem('futsal_teams');
+            const savedMatches = localStorage.getItem('futsal_matches');
+            const savedEliminated = localStorage.getItem('futsal_eliminated');
+            
+            if (savedTeams) {
+                teams = JSON.parse(savedTeams);
+            }
+            if (savedMatches) {
+                matches = JSON.parse(savedMatches);
+            }
+            if (savedEliminated) {
+                eliminatedTeams = JSON.parse(savedEliminated);
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('futsal_teams', JSON.stringify(teams));
+            localStorage.setItem('futsal_matches', JSON.stringify(matches));
+            localStorage.setItem('futsal_eliminated', JSON.stringify(eliminatedTeams));
+        }
+
+        function updatePublicViews() {
+            updateNextMatch();
+            updateMatchesList();
+            updateStandings();
+            updateEliminatedTeams();
+        }
+
+        function updateNextMatch() {
+            const nextMatch = matches.find(m => m.status === 'scheduled' || m.status === 'upcoming');
+            const nextMatchElement = document.getElementById('next-match');
+            
+            if (nextMatch) {
+                nextMatchElement.innerHTML = `
+                    <div class="match-teams">
+                        <span class="team-name">${nextMatch.team1}</span>
+                        <span class="vs">VS</span>
+                        <span class="team-name">${nextMatch.team2}</span>
+                    </div>
+                    <div class="match-time">${nextMatch.time}</div>
+                `;
+            } else {
+                nextMatchElement.innerHTML = `
+                    <div class="match-teams">
+                        <span class="team-name">Brak meczu</span>
+                        <span class="vs">VS</span>
+                        <span class="team-name">Brak meczu</span>
+                    </div>
+                    <div class="match-time">Brak zaplanowanych meczów</div>
+                `;
+            }
+        }
+
+        function updateMatchesList() {
+            const matchesListElement = document.getElementById('matches-list');
+            matchesListElement.innerHTML = '';
+            
+            if (matches.length === 0) {
+                matchesListElement.innerHTML = `
+                    <div class="match-item">
+                        <div class="match-info">
+                            <div class="match-teams-small">
+                                <span>Brak meczów</span>
+                            </div>
+                        </div>
+                        <div class="match-info">
+                            <span class="match-time">Brak meczów</span>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Sortuj mecze według godziny
+            const sortedMatches = [...matches].sort((a, b) => a.time.localeCompare(b.time));
+            
+            sortedMatches.forEach(match => {
+                const matchElement = document.createElement('div');
+                matchElement.className = 'match-item';
+                matchElement.innerHTML = `
+                    <div class="match-info">
+                        <div class="match-teams-small">
+                            <span>${match.team1}</span>
+                            <span>vs</span>
+                            <span>${match.team2}</span>
+                        </div>
+                    </div>
+                    <div class="match-info">
+                        ${match.status === 'completed' ? 
+                            `<span class="match-status status-completed">${match.score1} - ${match.score2}</span>` : 
+                            match.status === 'upcoming' ? 
+                            `<span class="match-status status-upcoming">Za chwilę</span>` : 
+                            `<span class="match-status status-scheduled">${match.time}</span>`
+                        }
+                    </div>
+                `;
+                matchesListElement.appendChild(matchElement);
+            });
+        }
+
+        function updateEliminatedTeams() {
+            const eliminatedElement = document.getElementById('eliminated-teams');
+            eliminatedElement.innerHTML = '';
+            
+            if (eliminatedTeams.length === 0) {
+                eliminatedElement.innerHTML = `
+                    <div class="match-item">
+                        <div class="match-info">
+                            <div class="match-teams-small">
+                                <span>Brak odpadniętych drużyn</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            eliminatedTeams.forEach(team => {
+                const teamElement = document.createElement('div');
+                teamElement.className = 'match-item';
+                teamElement.innerHTML = `
+                    <div class="match-info">
+                        <div class="match-teams-small">
+                            <span>${team}</span>
+                        </div>
+                    </div>
+                `;
+                eliminatedElement.appendChild(teamElement);
+            });
+        }
+
+        function updateStandings() {
+            const standingsBody = document.getElementById('standings-body');
+            standingsBody.innerHTML = '';
+            
+            if (teams.length === 0) {
+                standingsBody.innerHTML = '<tr><td colspan="3">Brak drużyn</td></tr>';
+                return;
+            }
+            
+            // Oblicz statystyki drużyn
+            const teamStats = {};
+            teams.forEach(team => {
+                if (!eliminatedTeams.includes(team.name)) {
+                    teamStats[team.name] = {
+                        name: team.name,
+                        played: 0,
+                        wins: 0,
+                        draws: 0,
+                        losses: 0,
+                        goalsFor: 0,
+                        goalsAgainst: 0
+                    };
+                }
+            });
+            
+            matches.forEach(match => {
+                if (match.status === 'completed') {
+                    const team1Stats = teamStats[match.team1];
+                    const team2Stats = teamStats[match.team2];
+                    
+                    if (team1Stats && team2Stats) {
+                        team1Stats.played++;
+                        team2Stats.played++;
+                        team1Stats.goalsFor += match.score1;
+                        team1Stats.goalsAgainst += match.score2;
+                        team2Stats.goalsFor += match.score2;
+                        team2Stats.goalsAgainst += match.score1;
+                        
+                        if (match.score1 > match.score2) {
+                            team1Stats.wins++;
+                            team2Stats.losses++;
+                        } else if (match.score1 < match.score2) {
+                            team1Stats.losses++;
+                            team2Stats.wins++;
+                        } else {
+                            team1Stats.draws++;
+                            team2Stats.draws++;
+                        }
+                    }
+                }
+            });
+            
+            // Sortuj drużyny
+            const sortedTeams = Object.values(teamStats).sort((a, b) => {
+                const pointsA = a.wins * 3 + a.draws;
+                const pointsB = b.wins * 3 + b.draws;
+                if (pointsA !== pointsB) return pointsB - pointsA;
+                
+                const gdA = a.goalsFor - a.goalsAgainst;
+                const gdB = b.goalsFor - b.goalsAgainst;
+                if (gdA !== gdB) return gdB - gdA;
+                
+                return b.goalsFor - a.goalsFor;
+            });
+            
+            // Wyświetl tabelę
+            sortedTeams.forEach((team, index) => {
+                const points = team.wins * 3 + team.draws;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${team.name}</td>
+                    <td><strong>${points}</strong></td>
+                `;
+                standingsBody.appendChild(row);
+            });
+        }
+
+        function updateAdminViews() {
+            updateTeamSelects();
+            updateMatchSelects();
+            updateAdminTeamsList();
+            updateAdminMatchesList();
+        }
+
+        function updateTeamSelects() {
+            const team1Select = document.getElementById('team1');
+            const team2Select = document.getElementById('team2');
+            
+            // Wyczyść oba selecty
+            team1Select.innerHTML = '<option value="">Wybierz drużynę</option>';
+            team2Select.innerHTML = '<option value="">Wybierz drużynę</option>';
+            
+            // Dodaj drużyny do selectów (tylko nieeliminowane)
+            teams.forEach(team => {
+                if (!eliminatedTeams.includes(team.name)) {
+                    const option1 = document.createElement('option');
+                    option1.value = team.name;
+                    option1.textContent = team.name;
+                    team1Select.appendChild(option1);
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = team.name;
+                    option2.textContent = team.name;
+                    team2Select.appendChild(option2);
+                }
+            });
+        }
+
+        function updateMatchSelects() {
+            const matchSelect = document.getElementById('matchToComplete');
+            matchSelect.innerHTML = '<option value="">Wybierz mecz</option>';
+            
+            matches.forEach(match => {
+                if (match.status !== 'completed') {
+                    const option = document.createElement('option');
+                    option.value = match.id;
+                    option.textContent = `${match.team1} vs ${match.team2}`;
+                    matchSelect.appendChild(option);
+                }
+            });
+        }
+
+        function updateAdminTeamsList() {
+            const teamsListElement = document.getElementById('teams-list');
+            teamsListElement.innerHTML = '';
+            
+            teams.forEach(team => {
+                const teamElement = document.createElement('div');
+                teamElement.className = 'match-item';
+                
+                let content = `
+                    <div>
+                        <strong>${team.name}</strong>
+                    </div>
+                    <div class="admin-controls">
+                        <button onclick="eliminateTeam('${team.name}')" class="btn btn-red btn-sm">Odpadła</button>
+                        <button onclick="deleteTeam('${team.name}')" class="btn btn-red btn-sm">Usuń</button>
+                    </div>
+                `;
+                
+                if (eliminatedTeams.includes(team.name)) {
+                    content = `
+                        <div style="background: rgba(239, 68, 68, 0.2); padding: 0.5rem; border-radius: 4px;">
+                            <strong style="color: #ef4444;">${team.name} (ELIMINOWANA)</strong>
+                        </div>
+                        <div class="admin-controls">
+                            <button onclick="restoreTeam('${team.name}')" class="btn btn-blue btn-sm">Przywróć</button>
+                        </div>
+                    `;
+                }
+                
+                teamElement.innerHTML = content;
+                teamsListElement.appendChild(teamElement);
+            });
+        }
+
+        function updateAdminMatchesList() {
+            const matchesListElement = document.getElementById('admin-matches-list');
+            matchesListElement.innerHTML = '';
+            
+            // Sortuj mecze według godziny
+            const sortedMatches = [...matches].sort((a, b) => a.time.localeCompare(b.time));
+            
+            sortedMatches.forEach(match => {
+                const matchElement = document.createElement('div');
+                matchElement.className = 'match-item';
+                
+                let content = `
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <span>${match.team1} vs ${match.team2}</span>
+                        ${match.status === 'completed' ? 
+                            `<span class="match-status status-completed">${match.score1} - ${match.score2}</span>` : 
+                            match.status === 'upcoming' ? 
+                            `<span class="match-status status-upcoming">Za chwilę</span>` : 
+                            `<span class="match-status status-scheduled">${match.time}</span>`
+                        }
+                    </div>
+                `;
+                
+                if (match.status !== 'completed') {
+                    content += `
+                        <div class="admin-controls">
+                            <button onclick="startEditingMatch(${match.id})" class="btn btn-blue btn-sm">Edytuj</button>
+                            <button onclick="deleteMatch(${match.id})" class="btn btn-red btn-sm">Usuń</button>
+                        </div>
+                    `;
+                } else {
+                    content += `
+                        <div class="admin-controls">
+                            <button onclick="deleteMatch(${match.id})" class="btn btn-red btn-sm">Usuń</button>
+                        </div>
+                    `;
+                }
+                
+                matchElement.innerHTML = content;
+                matchesListElement.appendChild(matchElement);
+            });
+        }
+
+        function addTeam() {
+            const teamName = document.getElementById('newTeamName').value.trim();
+            if (!teamName) return;
+            
+            // Sprawdź czy drużyna już istnieje
+            if (teams.some(team => team.name === teamName)) {
+                alert('Drużyna o tej nazwie już istnieje!');
+                return;
+            }
+            
+            teams.push({
+                name: teamName
+            });
+            
+            saveToStorage();
+            updatePublicViews();
+            updateAdminViews();
+            document.getElementById('newTeamName').value = '';
+        }
+
+        function deleteTeam(teamName) {
+            if (!confirm('Czy na pewno chcesz usunąć drużynę "' + teamName + '"?')) return;
+            
+            teams = teams.filter(team => team.name !== teamName);
+            eliminatedTeams = eliminatedTeams.filter(team => team !== teamName);
+            matches = matches.filter(match => match.team1 !== teamName && match.team2 !== teamName);
+            
+            saveToStorage();
+            updatePublicViews();
+            updateAdminViews();
+        }
+
+        function eliminateTeam(teamName) {
+            if (!confirm('Czy na pewno chcesz oznaczyć drużynę "' + teamName + '" jako odpadłą?')) return;
+            
+            if (!eliminatedTeams.includes(teamName)) {
+                eliminatedTeams.push(teamName);
+            }
+            
+            saveToStorage();
+            updatePublicViews();
+            updateAdminViews();
+        }
+
+        function restoreTeam(teamName) {
+            eliminatedTeams = eliminatedTeams.filter(team => team !== teamName);
+            saveToStorage();
+            updatePublicViews();
+            updateAdminViews();
+        }
+
+        function addMatch() {
+            const team1 = document.getElementById('team1').value;
+            const team2 = document.getElementById('team2').value;
+            const time = document.getElementById('matchTime').value;
+            
+            if (!team1 || !team2 || !time) {
+                alert('Wypełnij wszystkie pola!');
+                return;
+            }
+            
+            if (team1 === team2) {
+                alert('Drużyny nie mogą być takie same!');
+                return;
+            }
+            
+            matches.push({
+                id: Date.now(),
+                team1: team1,
+                team2: team2,
+                time: time,
+                status: 'scheduled',
+                score1: 0,
+                score2: 0
+            });
+            
+            saveToStorage();
+            updatePublicViews();
+            updateAdminViews();
+            document.getElementById('team1').value = '';
+            document.getElementById('team2').value = '';
+            document.getElementById('matchTime').value = '';
+        }
+
+        function deleteMatch(matchId) {
+            if (!confirm('Czy na pewno chcesz usunąć ten mecz?')) return;
+            
+            matches = matches.filter(match => match.id !== matchId);
+            
+            saveToStorage();
+            updatePublicViews();
+            updateAdminViews();
+        }
+
+        function completeMatch() {
+            const matchId = document.getElementById('matchToComplete').value;
+            const score1 = document.getElementById('score1').value;
+            const score2 = document.getElementById('score2').value;
+            
+            if (!matchId || !score1 || !score2) {
+                alert('Wypełnij wszystkie pola!');
+                return;
+            }
+            
+            const match = matches.find(m => m.id === parseInt(matchId));
+            if (match) {
+                match.score1 = parseInt(score1);
+                match.score2 = parseInt(score2);
+                match.status = 'completed';
+                
+                // Sprawdź czy drużyny mają statystyki, jeśli nie - dodaj
+                if (!teams.some(t => t.name === match.team1)) {
+                    teams.push({ name: match.team1 });
+                }
+                if (!teams.some(t => t.name === match.team2)) {
+                    teams.push({ name: match.team2 });
+                }
+                
+                saveToStorage();
+                updatePublicViews();
+                updateAdminViews();
+                
+                // Wyczyść formularz
+                document.getElementById('matchToComplete').value = '';
+                document.getElementById('score1').value = '';
+                document.getElementById('score2').value = '';
+            }
+        }
+
+        function startEditingMatch(matchId) {
+            const match = matches.find(m => m.id === matchId);
+            if (!match) return;
+            
+            const newScore1 = prompt('Wynik drużyny ' + match.team1 + ':', match.score1);
+            const newScore2 = prompt('Wynik drużyny ' + match.team2 + ':', match.score2);
+            
+            if (newScore1 !== null && newScore2 !== null) {
+                match.score1 = parseInt(newScore1) || 0;
+                match.score2 = parseInt(newScore2) || 0;
+                match.status = 'completed';
+                
+                saveToStorage();
+                updatePublicViews();
+                updateAdminViews();
+            }
+        }
+
+        function showView(view) {
+            document.getElementById('schedule-view').style.display = 'none';
+            document.getElementById('standings-view').style.display = 'none';
+            document.getElementById('admin-view').style.display = 'none';
+            
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            
+            if (view === 'admin') {
+                document.getElementById('admin-view').style.display = 'block';
+                document.querySelector(`.nav-link[onclick="showView('${view}')"]`).classList.add('active');
+            } else {
+                document.getElementById(`${view}-view`).style.display = 'block';
+                document.querySelector(`.nav-link[onclick="showView('${view}')"]`).classList.add('active');
+            }
+        }
+
+        function showAdminView(view) {
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector(`.nav-link[onclick="showAdminView('${view}')"]`).classList.add('active');
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            document.querySelector('.admin-section').style.display = 'none';
+            document.querySelector('.public-section').style.display = 'block';
+            document.querySelector('.nav-link[onclick="showView(\'schedule\')"]').classList.add('active');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (username === 'admin' && password === 'futsal2025') {
+                isAuthenticated = true;
+                document.querySelector('.public-section').style.display = 'none';
+                document.querySelector('.admin-section').style.display = 'block';
+                loadFromStorage();
+                updatePublicViews();
+                updateAdminViews();
+            } else {
+                alert('Nieprawidłowy login lub hasło');
+            }
+        });
+
+        // Załaduj dane przy starcie
+        loadFromStorage();
+        updatePublicViews();
+    </script>
+</body>
+</html>
+

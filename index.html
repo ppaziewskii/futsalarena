@@ -316,10 +316,25 @@
         .footer-link:hover {
             text-decoration: underline;
         }
+        
+        .sync-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            z-index: 1000;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div id="root">
+        <div class="sync-indicator" id="syncIndicator">Zaktualizowano dane</div>
+        
         <div class="public-section">
             <header class="header">
                 <div class="container">
@@ -580,6 +595,14 @@
             localStorage.setItem('futsal_teams', JSON.stringify(teams));
             localStorage.setItem('futsal_matches', JSON.stringify(matches));
             localStorage.setItem('futsal_eliminated', JSON.stringify(eliminatedTeams));
+        }
+
+        function showSyncIndicator() {
+            const indicator = document.getElementById('syncIndicator');
+            indicator.style.display = 'block';
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 2000);
         }
 
         function updatePublicViews() {
@@ -908,6 +931,7 @@
             });
             
             saveToStorage();
+            showSyncIndicator();
             updatePublicViews();
             updateAdminViews();
             document.getElementById('newTeamName').value = '';
@@ -921,6 +945,7 @@
             matches = matches.filter(match => match.team1 !== teamName && match.team2 !== teamName);
             
             saveToStorage();
+            showSyncIndicator();
             updatePublicViews();
             updateAdminViews();
         }
@@ -933,6 +958,7 @@
             }
             
             saveToStorage();
+            showSyncIndicator();
             updatePublicViews();
             updateAdminViews();
         }
@@ -940,6 +966,7 @@
         function restoreTeam(teamName) {
             eliminatedTeams = eliminatedTeams.filter(team => team !== teamName);
             saveToStorage();
+            showSyncIndicator();
             updatePublicViews();
             updateAdminViews();
         }
@@ -970,6 +997,7 @@
             });
             
             saveToStorage();
+            showSyncIndicator();
             updatePublicViews();
             updateAdminViews();
             document.getElementById('team1').value = '';
@@ -983,6 +1011,7 @@
             matches = matches.filter(match => match.id !== matchId);
             
             saveToStorage();
+            showSyncIndicator();
             updatePublicViews();
             updateAdminViews();
         }
@@ -1012,6 +1041,7 @@
                 }
                 
                 saveToStorage();
+                showSyncIndicator();
                 updatePublicViews();
                 updateAdminViews();
                 
@@ -1035,6 +1065,7 @@
                 match.status = 'completed';
                 
                 saveToStorage();
+                showSyncIndicator();
                 updatePublicViews();
                 updateAdminViews();
             }
@@ -1084,6 +1115,13 @@
                 alert('Nieprawidłowy login lub hasło');
             }
         });
+
+        // Synchronizacja danych co 30 sekund
+        setInterval(function() {
+            loadFromStorage();
+            updatePublicViews();
+            updateAdminViews();
+        }, 30000);
 
         // Załaduj dane przy starcie
         loadFromStorage();

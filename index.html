@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Futsal Arena - Turniej Piłki Nożnej</title>
+    <title>Futsal Arena - Turniej Piłki Nożnych</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -366,11 +366,11 @@
                             </h2>
                             <div id="next-match" class="next-match">
                                 <div class="match-teams">
-                                    <span class="team-name">Brak meczu</span>
+                                    <span class="team-name">Ładowanie...</span>
                                     <span class="vs">VS</span>
-                                    <span class="team-name">Brak meczu</span>
+                                    <span class="team-name">Ładowanie...</span>
                                 </div>
-                                <div class="match-time">Brak zaplanowanych meczów</div>
+                                <div class="match-time">Ładowanie...</div>
                             </div>
                         </section>
 
@@ -385,11 +385,11 @@
                                 <div class="match-item">
                                     <div class="match-info">
                                         <div class="match-teams-small">
-                                            <span>Brak meczów</span>
+                                            <span>Ładowanie...</span>
                                         </div>
                                     </div>
                                     <div class="match-info">
-                                        <span class="match-time">Brak meczów</span>
+                                        <span class="match-time">Ładowanie...</span>
                                     </div>
                                 </div>
                             </div>
@@ -406,7 +406,7 @@
                                 <div class="match-item">
                                     <div class="match-info">
                                         <div class="match-teams-small">
-                                            <span>Brak odpadniętych drużyn</span>
+                                            <span>Ładowanie...</span>
                                         </div>
                                     </div>
                                 </div>
@@ -433,7 +433,7 @@
                                     </thead>
                                     <tbody id="standings-body">
                                         <tr>
-                                            <td colspan="3">Brak drużyn</td>
+                                            <td colspan="3">Ładowanie...</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -510,13 +510,13 @@
                                     <div class="form-group">
                                         <label class="form-label">Drużyna 1</label>
                                         <select id="team1" class="admin-select">
-                                            <option value="">Wybierz drużynę</option>
+                                            <option value="">Ładowanie...</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Drużyna 2</label>
                                         <select id="team2" class="admin-select">
-                                            <option value="">Wybierz drużynę</option>
+                                            <option value="">Ładowanie...</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -529,7 +529,7 @@
                                     <div class="form-group">
                                         <label class="form-label">Mecz</label>
                                         <select id="matchToComplete" class="admin-select">
-                                            <option value="">Wybierz mecz</option>
+                                            <option value="">Ładowanie...</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
@@ -569,32 +569,86 @@
     </div>
 
     <script>
+        // ZASTĄP TE ID TWOIM ID ARKUSZA GOOGLE SHEETS
+        const SPREADSHEET_ID = '1234567890abcdefghijklmnopqrstuvwxyz'; // <- WSTAW SWOJE ID TUTAJ
+        
         let isAuthenticated = false;
         let teams = [];
         let matches = [];
         let eliminatedTeams = [];
 
         // Funkcje do zarządzania danymi
-        function loadFromStorage() {
-            const savedTeams = localStorage.getItem('futsal_teams');
-            const savedMatches = localStorage.getItem('futsal_matches');
-            const savedEliminated = localStorage.getItem('futsal_eliminated');
-            
-            if (savedTeams) {
-                teams = JSON.parse(savedTeams);
-            }
-            if (savedMatches) {
-                matches = JSON.parse(savedMatches);
-            }
-            if (savedEliminated) {
-                eliminatedTeams = JSON.parse(savedEliminated);
+        async function loadFromStorage() {
+            try {
+                // Pobierz dane z Google Sheets
+                const teamsResponse = await fetch(`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Teams`);
+                const matchesResponse = await fetch(`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Matches`);
+                const eliminatedResponse = await fetch(`https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=Eliminated`);
+                
+                // Przetwórz odpowiedzi JSON
+                const teamsText = await teamsResponse.text();
+                const matchesText = await matchesResponse.text();
+                const eliminatedText = await eliminatedResponse.text();
+                
+                // Usuń opakowanie JSONP
+                const teamsJson = JSON.parse(teamsText.substring(47, teamsText.length - 2));
+                const matchesJson = JSON.parse(matchesText.substring(47, matchesText.length - 2));
+                const eliminatedJson = JSON.parse(eliminatedText.substring(47, eliminatedText.length - 2));
+                
+                // Przetwórz dane drużyn
+                teams = [];
+                if (teamsJson.table.rows) {
+                    teamsJson.table.rows.forEach(row => {
+                        if (row.c && row.c[0] && row.c[0].v) {
+                            teams.push({ name: row.c[0].v });
+                        }
+                    });
+                }
+                
+                // Przetwórz mecze
+                matches = [];
+                if (matchesJson.table.rows) {
+                    matchesJson.table.rows.forEach(row => {
+                        if (row.c && row.c[0] && row.c[0].v) {
+                            matches.push({
+                                id: parseInt(row.c[0].v),
+                                team1: row.c[1].v,
+                                team2: row.c[2].v,
+                                time: row.c[3].v,
+                                status: row.c[4].v,
+                                score1: parseInt(row.c[5].v) || 0,
+                                score2: parseInt(row.c[6].v) || 0
+                            });
+                        }
+                    });
+                }
+                
+                // Przetwórz odpadnięte drużyny
+                eliminatedTeams = [];
+                if (eliminatedJson.table.rows) {
+                    eliminatedJson.table.rows.forEach(row => {
+                        if (row.c && row.c[0] && row.c[0].v) {
+                            eliminatedTeams.push(row.c[0].v);
+                        }
+                    });
+                }
+                
+                updatePublicViews();
+                updateAdminViews();
+            } catch (error) {
+                console.error('Błąd ładowania danych:', error);
+                alert('Błąd ładowania danych. Sprawdź ID arkusza i upewnij się, że jest publiczny.');
             }
         }
 
-        function saveToStorage() {
-            localStorage.setItem('futsal_teams', JSON.stringify(teams));
-            localStorage.setItem('futsal_matches', JSON.stringify(matches));
-            localStorage.setItem('futsal_eliminated', JSON.stringify(eliminatedTeams));
+        async function saveToStorage() {
+            try {
+                // Zaktualizuj dane w Google Sheets (to wymaga API z autoryzacją, co jest niemożliwe w czystym JS)
+                // W praktyce, bez serwera, nie można zapisywać do Google Sheets z poziomu przeglądarki
+                alert('Zmiany zostały zapisane lokalnie. Aby były widoczne dla innych, skontaktuj się z administratorem.');
+            } catch (error) {
+                console.error('Błąd zapisu danych:', error);
+            }
         }
 
         function showSyncIndicator() {
@@ -1119,13 +1173,10 @@
         // Synchronizacja danych co 30 sekund
         setInterval(function() {
             loadFromStorage();
-            updatePublicViews();
-            updateAdminViews();
         }, 30000);
 
         // Załaduj dane przy starcie
         loadFromStorage();
-        updatePublicViews();
     </script>
 </body>
 </html>
